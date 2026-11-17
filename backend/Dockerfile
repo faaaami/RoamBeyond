@@ -35,6 +35,8 @@ COPY --chown=app:app . .
 # to the database, so a placeholder URL is enough.
 RUN DJANGO_SECRET_KEY=build-only-placeholder-key-0123456789abcdef DJANGO_ALLOWED_HOSTS=build \
     DATABASE_URL=postgres://build:build@localhost:5432/build RESEND_API_KEY=build \
+    CACHE_URL=redis://build:6379/0 TRUST_PROXY_HEADERS=false \
+    CORS_ALLOWED_ORIGINS=https://build.example \
     python manage.py collectstatic --no-input \
     && mkdir -p media && chown -R app:app staticfiles media
 

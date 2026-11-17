@@ -134,7 +134,8 @@ class StaffAPIMixin:
 
     # JWT only: browser session cookies never authenticate the admin API.
     authentication_classes: Sequence[type[BaseAuthentication]] = [JWTAuthentication]
-    permission_classes: Sequence[_PermissionClass] = [IsStaff]
+    # String annotation: _PermissionClass exists only for type checkers, not at runtime.
+    permission_classes: Sequence["_PermissionClass"] = [IsStaff]
 
 
 class StaffModelViewSet(StaffAPIMixin, viewsets.ModelViewSet):
