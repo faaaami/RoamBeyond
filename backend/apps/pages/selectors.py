@@ -9,7 +9,7 @@ from rest_framework.request import Request
 
 from apps.catalog.enums import BudgetBand, Category
 from apps.core.enums import DURATION_RANGES, DurationBand
-from apps.core.media import media_url
+from apps.core.media import image_url
 
 from . import layout
 from .models import (
@@ -40,7 +40,8 @@ def home_page(request: Request | None) -> dict[str, Any]:
             "label": scene.label or scene.destination.region,
             "title": scene.title or scene.destination.name,
             "text": scene.text,
-            "image": media_url(scene.image or scene.destination.image, request),
+            "image": image_url(scene.image, scene.image_link, request)
+            or image_url(scene.destination.image, scene.destination.image_link, request),
         }
         for scene in scenes
     ]
@@ -52,9 +53,12 @@ def about_page(request: Request | None) -> dict[str, Any]:
     data = layout.nest(page, layout.ABOUT_PAGE)
     data["facts"] = [{"label": f.label, "value": f.value} for f in page.facts.all()]
     data["values"] = [{"title": v.title, "text": v.text} for v in page.values.all()]
-    data["teamPhoto"] = {"src": media_url(page.team_photo, request), "alt": page.team_photo_alt}
+    data["teamPhoto"] = {
+        "src": image_url(page.team_photo, page.team_photo_link, request),
+        "alt": page.team_photo_alt,
+    }
     data["officePhoto"] = {
-        "src": media_url(page.office_photo, request),
+        "src": image_url(page.office_photo, page.office_photo_link, request),
         "alt": page.office_photo_alt,
     }
     return data
