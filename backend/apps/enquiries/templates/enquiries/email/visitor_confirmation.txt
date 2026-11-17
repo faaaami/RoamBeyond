@@ -1,0 +1,16 @@
+{% autoescape off %}Hello {{ enquiry.name }},
+
+Thank you for your enquiry. A travel planner from {{ site_name }} will call you back{% if callback_window and "[" not in callback_window %} {{ callback_window }}{% else %} soon{% endif %}.
+
+Here is what you sent us:
+{% for label, value in lines %}
+{{ label }}: {{ value }}{% endfor %}
+
+No payment is taken until you have confirmed a trip with us on the phone.{% if phone and "[" not in phone %}
+
+In a hurry? Call us on {{ phone }}{% if whatsapp and "[" not in whatsapp %} or WhatsApp {{ whatsapp }}{% endif %}.{% endif %}
+
+Your reference: {{ enquiry.reference }}
+
+{{ site_name }}
+{% endautoescape %}

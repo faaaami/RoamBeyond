@@ -1,0 +1,7 @@
+New {{ enquiry.title|lower }} from the website
+{% for label, value in lines %}
+{{ label }}: {{ value }}{% endfor %}
+
+The visitor agreed to be contacted about this enquiry.
+Reference: {{ enquiry.reference }}{% if admin_url %}
+Open in the admin panel: {{ admin_url }}{% endif %}

@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@import "../../shared/theme.css";
+
+/* Website-only styles. Colours, fonts and base styles live in shared/theme.css. */
+
+/* Lift the floating WhatsApp button above the sticky enquiry bar on package pages. */
+@media (max-width: 1023px) {
+  body:has([data-sticky-bar]) .wa-fab {
+    bottom: 5.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .animate-marquee {
+    animation: none !important;
+  }
+}
+
+/*
+ * Form controls that browsers draw their own way. Safari ignores min-height on
+ * dropdowns (they come out about half as tall as the text fields) and puts a
+ * date's value at the top of its box. These rules give dropdowns and date
+ * fields the same 48px box as every other field, with the value centred.
+ *
+ * Not inside an @layer on purpose: unlayered rules win over Tailwind's
+ * utilities, which would otherwise reset `display`. Scoped to #main so
+ * controls outside the page content keep their own styles.
+ */
+#main select {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3rem;
+  padding-right: 2.75rem;
+  line-height: 1.5;
+  /* The arrow that appearance: none removes */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312291e' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1.125rem;
+}
+
+#main input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  height: 3rem;
+  line-height: 1.5;
+}
+#main input[type="date"]::-webkit-datetime-edit {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  line-height: 1.5;
+}
+#main input[type="date"]::-webkit-date-and-time-value {
+  min-height: 1.5em;
+  text-align: left;
+}
+#main input[type="date"]::-webkit-calendar-picker-indicator {
+  margin: 0;
+  cursor: pointer;
+}
+
+/* ---------- Admin panel (/admin) ---------- */
+/*
+ * Form controls that browsers draw their own way: give dropdowns and date
+ * fields the same 48px box as text inputs, with the value centred (Safari).
+ */
+main select {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%234b5d52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  padding-right: 2.5rem;
+}
+main input[type="date"] {
+  display: flex;
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

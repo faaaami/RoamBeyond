@@ -1,0 +1,117 @@
+/*
+ * RoamBeyond design system, shared by the website (src/) and the admin panel
+ * (admin-frontend/). Both import this file right after Tailwind:
+ *
+ *   @import "tailwindcss";
+ *   @import "<relative path>/shared/theme.css";
+ *
+ * Change a colour, font or shadow here and both apps follow.
+ *
+ * Fonts are loaded by each app's root layout with next/font, which must set
+ * these CSS variables on <html>:
+ *   --font-bricolage   Bricolage Grotesque (headings, display numbers)
+ *   --font-dm-sans     DM Sans (body text, forms)
+ */
+
+@theme {
+  /* Brand palette: green, cream and white. Change these to re-skin the site. */
+  --color-green: #1f5a3d;
+  --color-green-light: #2b7350;
+  --color-ink: #12291e; /* deepest green, used for text and the footer */
+  --color-cream: #f4ecd8;
+  --color-cream-dark: #e8dcc0;
+  --color-paper: #fcf9f1; /* page background: a very light cream. Cards are white. */
+
+  /* Supporting neutrals, all tested for AA contrast in their intended pairings. */
+  --color-muted: #4b5d52; /* secondary text: 6.9:1 on white, 5.8:1 on cream */
+  --color-line: #e2dac4;
+  --color-mist: #f4ecd8; /* cream bands and chips */
+  --color-danger: #b3261e; /* error text on white: 6.5:1 */
+
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(18 41 30 / 0.06), 0 8px 24px -12px rgb(18 41 30 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(18 41 30 / 0.08), 0 20px 40px -16px rgb(18 41 30 / 0.3);
+
+  --animate-marquee: marquee 48s linear infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-twinkle: twinkle 4s ease-in-out infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.95;
+    }
+  }
+  @keyframes shimmer {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    /* Green ring with a white halo, so focus is visible on light and dark backgrounds. */
+    outline: 3px solid var(--color-green);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #fff;
+    border-radius: 4px;
+  }
+  /* Native date and select controls follow the light theme. */
+  input,
+  select,
+  textarea {
+    color-scheme: light;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+}

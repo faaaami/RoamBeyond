@@ -1,0 +1,7 @@
+from django.apps import AppConfig
+
+
+class AdminApiConfig(AppConfig):
+    name = "apps.admin_api"
+    label = "admin_api"
+    verbose_name = "Admin API"
