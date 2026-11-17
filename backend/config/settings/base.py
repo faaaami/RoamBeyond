@@ -204,7 +204,10 @@ REST_FRAMEWORK = {
         # Staff sign-in attempts per client IP (accounts also lock, see apps/admin_api).
         "login": env("LOGIN_THROTTLE_RATE", default="10/15m"),
     },
-    "NUM_PROXIES": 1 if TRUST_PROXY_HEADERS else None,
+    # Number of proxies between the visitor and this app. Each one appends an address to
+    # X-Forwarded-For, and the visitor's real address is the entry this many places from the end.
+    # Render puts the visitor's address and then one edge proxy, so the count is 2.
+    "NUM_PROXIES": env.int("TRUSTED_PROXY_COUNT", default=2) if TRUST_PROXY_HEADERS else None,
     "EXCEPTION_HANDLER": "apps.core.exceptions.exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
