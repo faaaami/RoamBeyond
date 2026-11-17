@@ -1,4 +1,8 @@
+import logging
+
 from rest_framework.throttling import AnonRateThrottle
+
+logger = logging.getLogger("rate_limit_diagnostic")
 
 _UNITS = {"s": 1, "m": 60, "h": 3600, "d": 86400}
 
@@ -11,6 +15,18 @@ class WindowRateThrottle(AnonRateThrottle):
     minutes). Subclass and set `scope`; the rate comes from
     REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"][scope].
     """
+
+    def get_ident(self, request):
+        ident = super().get_ident(request)
+        # TEMPORARY diagnostic: which address each request is counted under.
+        logger.warning(
+            "RATE_DIAG scope=%s xff=%r remote=%r ident=%r",
+            getattr(self, "scope", "?"),
+            request.META.get("HTTP_X_FORWARDED_FOR"),
+            request.META.get("REMOTE_ADDR"),
+            ident,
+        )
+        return ident
 
     def parse_rate(self, rate: str | None) -> tuple[int | None, int | None]:
         if rate is None:
