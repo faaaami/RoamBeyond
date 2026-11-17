@@ -180,3 +180,18 @@ Only `transform` and `opacity` are animated (plus SVG `pathLength` for the two d
 
 - **Unknown package or destination URLs** show the 404 page with a `noindex` tag. Because the route streams behind a loading skeleton, the HTTP status for those is 200 rather than 404.
 - **The map of India** on the landing page is a simplified decorative sketch generated from coordinates in `src/components/hero/india-map.ts`. Edit the `stops` list there to change the route.
+
+## Deployment settings
+
+**Website (Vercel).** Environment variables are read when the site is built, so change them, then redeploy.
+
+| Variable | Type in Vercel | Value |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | Config | The API address, e.g. `https://<api>.onrender.com` |
+| `NEXT_PUBLIC_SITE_URL` | Config | The website address, e.g. `https://<site>.vercel.app` |
+| `API_URL` | Secret | The API address, used while pages are built |
+| `REVALIDATE_SECRET` | Secret | Must equal `FRONTEND_REVALIDATE_SECRET` on the API |
+
+`NEXT_PUBLIC_` variables go into the browser, so they can't be Secret.
+
+**API (Render).** Set the website address in `CORS_ALLOWED_ORIGINS`, `CSRF_TRUSTED_ORIGINS`, `FRONTEND_URL`, `ADMIN_PANEL_URL` (address + `/admin`), and `FRONTEND_REVALIDATE_URL` (address + `/api/revalidate`). Redeploy the API after changing them.
