@@ -187,6 +187,7 @@ export function HomePageForm({ action, initial, options }: { action: Action; ini
                     <TextAreaField name={path("text")} label="Text" rows={2} />
                     <div className="md:col-span-2">
                       <ImageField name={path("image")} label="Photo" optional hint="Leave empty to use the destination's photo." />
+                      <TextField name={path("imageLink")} label="Photo link" optional hint="Or paste a public image link. Used when no photo is uploaded." />
                     </div>
                   </>
                 )}
@@ -278,7 +279,9 @@ export function AboutPageForm({ action, initial }: { action: Action; initial: ob
             content: (
               <FormSection columns={2}>
                 <ImageField name="teamPhoto" label="Team photo (tall)" removable optional aspect="aspect-[3/4]" hint="Leave as is to keep the placeholder photo." />
+                <TextField name="teamPhotoLink" label="Team photo link" optional hint="Or paste a public image link. Used when no photo is uploaded." />
                 <ImageField name="officePhoto" label="Office photo (tall)" removable optional aspect="aspect-[3/4]" hint="Leave as is to keep the placeholder photo." />
+                <TextField name="officePhotoLink" label="Office photo link" optional hint="Or paste a public image link. Used when no photo is uploaded." />
                 <TextField name="teamPhotoAlt" label="Description of the team photo" />
                 <TextField name="officePhotoAlt" label="Description of the office photo" />
               </FormSection>
