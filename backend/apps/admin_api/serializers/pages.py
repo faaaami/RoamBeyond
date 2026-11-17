@@ -89,7 +89,16 @@ class StorySceneSerializer(ChildSerializer):
 
     class Meta:
         model = StoryScene
-        fields = ("id", "destination", "destination_name", "label", "title", "text", "image")
+        fields = (
+            "id",
+            "destination",
+            "destination_name",
+            "label",
+            "title",
+            "text",
+            "image",
+            "image_link",
+        )
 
 
 class HomePageSerializer(NestedPageSerializer):
@@ -98,7 +107,7 @@ class HomePageSerializer(NestedPageSerializer):
     scenes = StorySceneSerializer(many=True, required=False)
     children = {
         "steps": ("title", "text"),
-        "scenes": ("destination", "label", "title", "text", "image"),
+        "scenes": ("destination", "label", "title", "text", "image", "image_link"),
     }
 
     class Meta:
