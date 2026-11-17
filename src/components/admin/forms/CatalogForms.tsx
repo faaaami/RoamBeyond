@@ -120,6 +120,7 @@ export function PackageForm({ action, initial, options, cancelHref }: { action: 
                 {(path) => (
                   <>
                     <ImageField name={path("image")} label="Photo" />
+                    <TextField name={path("imageLink")} label="Photo link" optional hint="Or paste a public image link. Used when no photo is uploaded." />
                     <TextField name={path("alt")} label="Description of the photo" />
                   </>
                 )}
@@ -133,6 +134,7 @@ export function PackageForm({ action, initial, options, cancelHref }: { action: 
             content: (
               <FormSection columns={2}>
                 <ImageField name="cover" label="Cover photo" hint="Shown on the package card and first in the gallery." />
+                <TextField name="coverLink" label="Cover photo link" optional hint="Or paste a public image link. Used when no photo is uploaded." />
                 <TextField name="coverAlt" label="Description of the cover photo" hint="For screen readers and search engines." />
               </FormSection>
             ),
@@ -160,6 +162,7 @@ export function DestinationForm({ action, initial, cancelHref }: { action: Actio
         <LinesField name="knownFor" label="Known for" hint="One tag per line, e.g. Dal Lake houseboats." optional rows={4} />
         <div className="md:col-span-2">
           <ImageField name="image" label="Photo" />
+          <TextField name="imageLink" label="Photo link" optional hint="Or paste a public image link. Used when no photo is uploaded." />
         </div>
         <SwitchField name="isPublished" label="Published" hint="Turn off to hide the destination and its packages." />
         <SwitchField name="popular" label="Show as a popular destination" hint="Popular destinations appear on the home page and in the footer." />
