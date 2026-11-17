@@ -38,7 +38,9 @@ RUN DJANGO_SECRET_KEY=build-only-placeholder-key-0123456789abcdef DJANGO_ALLOWED
     CACHE_URL=redis://build:6379/0 TRUST_PROXY_HEADERS=false \
     CORS_ALLOWED_ORIGINS=https://build.example \
     python manage.py collectstatic --no-input \
-    && mkdir -p media && chown -R app:app staticfiles media
+    && mkdir -p media && chown -R app:app staticfiles media \
+    # Gunicorn's control server creates /app/.gunicorn, so the app user must own /app.
+    && chown app:app /app
 
 USER app
 EXPOSE 8000
