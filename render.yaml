@@ -48,13 +48,14 @@ services:
       - key: RESEND_API_KEY
         sync: false          # enquiry emails; the API refuses to start without it
 
-databases:
-  - name: roambeyond-db
-    databaseName: roambeyond
-    plan: basic-256mb        # free PostgreSQL databases on Render expire after 30 days
   # Redis-compatible cache. Render declares Key Value instances as services of type keyvalue.
   - type: keyvalue
     name: roambeyond-cache
     plan: free
     maxmemoryPolicy: noeviction
     ipAllowList: []          # required; empty: only services in this account can connect
+
+databases:
+  - name: roambeyond-db
+    databaseName: roambeyond
+    plan: basic-256mb        # free PostgreSQL databases on Render expire after 30 days
