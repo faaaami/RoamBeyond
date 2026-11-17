@@ -1,7 +1,8 @@
 """The CI seed command fills an empty catalog once, and never touches existing content."""
 
-import pytest
 from django.core.management import call_command
+
+import pytest
 
 from apps.catalog.models import Destination, TourPackage
 

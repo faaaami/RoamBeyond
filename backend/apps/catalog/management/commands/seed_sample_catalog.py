@@ -36,7 +36,9 @@ class Command(BaseCommand):
             popular=True,
             is_published=True,
         )
-        destination.image.save("sample-destination.jpg", ContentFile(SAMPLE_IMAGE.read_bytes()), save=False)
+        destination.image.save(
+            "sample-destination.jpg", ContentFile(SAMPLE_IMAGE.read_bytes()), save=False
+        )
         destination.save()
 
         TourPackage.objects.create(
