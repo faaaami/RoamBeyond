@@ -104,7 +104,12 @@ def test_package_validation(boss_api):
         format="json",
     )
     assert res.status_code == 400
-    assert {"tripTypes", "cover"} <= {f["path"] for f in res.data["fields"]}
+    assert "tripTypes" in {f["path"] for f in res.data["fields"]}
+
+    # A package needs a cover: an uploaded photo or a photo link.
+    no_cover = boss_api.post(PACKAGES, {**PACKAGE, "destination": destination.pk}, format="json")
+    assert no_cover.status_code == 400
+    assert "cover" in {f["path"] for f in no_cover.data["fields"]}
 
     # Cross-field rules run once every field is valid.
     package = make_package(destination)

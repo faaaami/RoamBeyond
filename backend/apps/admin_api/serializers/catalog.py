@@ -18,6 +18,23 @@ from apps.catalog.models import (
 from ..base import sync_children
 from .base import CamelCaseMixin, ChildSerializer, MediaField
 
+
+def _require_photo(
+    instance, attrs: dict[str, Any], file_key: str, link_key: str, message: str
+) -> None:
+    """A record needs a photo: an uploaded file or a link. Either may already be saved."""
+    if file_key in attrs:
+        has_file = bool(attrs[file_key])
+    else:
+        has_file = bool(instance and getattr(instance, file_key))
+    if link_key in attrs:
+        has_link = bool(attrs[link_key])
+    else:
+        has_link = bool(instance and getattr(instance, link_key))
+    if not has_file and not has_link:
+        raise serializers.ValidationError({file_key: message})
+
+
 # ---------------------------------------------------------------------------
 # Destinations
 # ---------------------------------------------------------------------------
@@ -25,7 +42,7 @@ from .base import CamelCaseMixin, ChildSerializer, MediaField
 
 @extend_schema_serializer(component_name="AdminDestination")
 class DestinationSerializer(CamelCaseMixin, serializers.ModelSerializer):
-    image = MediaField()
+    image = MediaField(required=False, allow_null=True)
     known_for = serializers.ListField(
         child=serializers.CharField(max_length=80), max_length=12, required=False
     )
@@ -43,6 +60,7 @@ class DestinationSerializer(CamelCaseMixin, serializers.ModelSerializer):
             "best_season",
             "known_for",
             "image",
+            "image_link",
             "popular",
             "is_published",
             "sort_order",
@@ -51,6 +69,10 @@ class DestinationSerializer(CamelCaseMixin, serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ("created_at", "updated_at")
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        _require_photo(self.instance, attrs, "image", "image_link", "Add a photo or a photo link.")
+        return attrs
 
     def get_package_count(self, obj: Destination) -> int:
         """Published packages. Lists annotate it in one query; single rows count here."""
@@ -72,11 +94,11 @@ class ItineraryDaySerializer(ChildSerializer):
 
 
 class PackagePhotoSerializer(ChildSerializer):
-    image = MediaField(required=False)
+    image = MediaField(required=False, allow_null=True)
 
     class Meta:
         model = PackagePhoto
-        fields = ("id", "image", "alt")
+        fields = ("id", "image", "image_link", "alt")
 
 
 @extend_schema_serializer(component_name="AdminTourPackageList")
@@ -109,7 +131,7 @@ class TourPackageListSerializer(CamelCaseMixin, serializers.ModelSerializer):
 
 @extend_schema_serializer(component_name="AdminTourPackage")
 class TourPackageSerializer(CamelCaseMixin, serializers.ModelSerializer):
-    cover = MediaField()
+    cover = MediaField(required=False, allow_null=True)
     trip_types = serializers.ListField(
         child=serializers.ChoiceField(choices=TripType.choices),
         min_length=1,
@@ -159,6 +181,7 @@ class TourPackageSerializer(CamelCaseMixin, serializers.ModelSerializer):
             "stay",
             "transport",
             "cover",
+            "cover_link",
             "cover_alt",
             "itinerary",
             "photos",
@@ -168,12 +191,15 @@ class TourPackageSerializer(CamelCaseMixin, serializers.ModelSerializer):
         read_only_fields = ("created_at", "updated_at")
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        _require_photo(
+            self.instance, attrs, "cover", "cover_link", "Add a cover photo or a photo link."
+        )
         days = attrs.get("days", getattr(self.instance, "days", None))
         nights = attrs.get("nights", getattr(self.instance, "nights", None))
         if days is not None and nights is not None and nights > days:
             raise serializers.ValidationError({"nights": "Nights cannot be more than days."})
         for i, photo in enumerate(attrs.get("photos", [])):
-            if not photo.get("id") and not photo.get("image"):
+            if not photo.get("id") and not photo.get("image") and not photo.get("image_link"):
                 raise serializers.ValidationError(
                     {"photos": {i: {"image": "Choose a photo to upload."}}}
                 )

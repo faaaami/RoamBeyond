@@ -10,27 +10,20 @@ from rest_framework import serializers
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 
-from apps.core.media import media_url
+from apps.core.media import image_url
 
 from .models import Destination, PhotoCredit, Review, TourPackage
 
 
 @extend_schema_field(OpenApiTypes.URI)
-class ImageUrlField(serializers.Field):
-    """An ImageField rendered as an absolute URL ("" when empty)."""
-
-    def __init__(self, **kwargs):
-        kwargs["read_only"] = True
-        super().__init__(**kwargs)
-
-    def to_representation(self, value: Any) -> str:
-        return media_url(value, self.context.get("request"))
-
-
 class DestinationSerializer(serializers.ModelSerializer):
     bestSeason = serializers.CharField(source="best_season")
+
+    def get_image(self, obj: Destination) -> str:
+        return image_url(obj.image, obj.image_link, self.context.get("request"))
+
     knownFor = serializers.ListField(source="known_for", child=serializers.CharField())
-    image = ImageUrlField()
+    image = serializers.SerializerMethodField()
     packageCount = serializers.IntegerField(source="package_count", read_only=True)
 
     class Meta:
@@ -54,8 +47,12 @@ class PackageSummarySerializer(serializers.ModelSerializer):
     destinationName = serializers.CharField(source="destination.name")
     tripTypes = serializers.ListField(source="trip_types", child=serializers.CharField())
     priceFrom = serializers.IntegerField(source="price_from", allow_null=True)
-    cover = ImageUrlField()
+    cover = serializers.SerializerMethodField()
     coverAlt = serializers.CharField(source="cover_alt")
+
+    def get_cover(self, obj: TourPackage) -> str:
+        return image_url(obj.cover, obj.cover_link, self.context.get("request"))
+
     categoryLabel = serializers.CharField(source="get_category_display", read_only=True)
 
     class Meta:
@@ -140,9 +137,9 @@ class PackageDetailSerializer(PackageSummarySerializer):
     def get_gallery(self, obj: TourPackage) -> list[dict[str, str]]:
         """The cover first, then the extra photos."""
         request = self.context.get("request")
-        photos = [{"src": media_url(obj.cover, request), "alt": obj.cover_alt}]
+        photos = [{"src": image_url(obj.cover, obj.cover_link, request), "alt": obj.cover_alt}]
         photos += [
-            {"src": media_url(photo.image, request), "alt": photo.alt or obj.name}
+            {"src": image_url(photo.image, photo.image_link, request), "alt": photo.alt or obj.name}
             for photo in obj.photos.all()
         ]
         return list(GalleryPhotoSerializer(photos, many=True).data)

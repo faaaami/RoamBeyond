@@ -160,6 +160,13 @@ class StoryScene(models.Model):
         blank=True,
         help_text="Leave empty to use the destination's photo.",
     )
+    image_link = models.CharField(
+        "photo link",
+        max_length=500,
+        blank=True,
+        help_text="Or paste a public image link, e.g. /images/destination-goa.jpg. "
+        "Used when no photo is uploaded.",
+    )
 
     class Meta:
         ordering = ("position", "id")
@@ -176,8 +183,10 @@ class AboutPage(SingletonModel):
     story_title = line("story heading")
     story = paragraph("our story", "Leave an empty line between paragraphs.")
     team_photo = models.ImageField("team photo (tall)", upload_to="pages/about/", blank=True)
+    team_photo_link = models.CharField("team photo link", max_length=500, blank=True)
     team_photo_alt = line("description of the team photo")
     office_photo = models.ImageField("office photo (tall)", upload_to="pages/about/", blank=True)
+    office_photo_link = models.CharField("office photo link", max_length=500, blank=True)
     office_photo_alt = line("description of the office photo")
     values_title = line("values heading")
     cta_title = line("closing call-to-action title")

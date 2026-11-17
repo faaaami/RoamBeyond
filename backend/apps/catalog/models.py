@@ -39,7 +39,14 @@ class Destination(Orderable, TimeStampedModel):
         max_length_each=80,
         help_text='Short tags, one per line, e.g. "Dal Lake houseboats".',
     )
-    image = models.ImageField("photo", upload_to="destinations/")
+    image = models.ImageField("photo", upload_to="destinations/", blank=True)
+    image_link = models.CharField(
+        "photo link",
+        max_length=500,
+        blank=True,
+        help_text="Or paste a public image link, e.g. /images/destination-goa.jpg. "
+        "Used when no photo is uploaded.",
+    )
     popular = models.BooleanField(
         "show as a popular destination",
         default=False,
@@ -99,7 +106,15 @@ class TourPackage(Orderable, TimeStampedModel):
     cover = models.ImageField(
         "cover photo",
         upload_to="packages/",
+        blank=True,
         help_text="Shown on the package card and first in the gallery.",
+    )
+    cover_link = models.CharField(
+        "photo link",
+        max_length=500,
+        blank=True,
+        help_text="Or paste a public image link, e.g. /images/destination-goa.jpg. "
+        "Used when no photo is uploaded.",
     )
     cover_alt = models.CharField(
         "description of the cover photo",
@@ -143,7 +158,14 @@ class PackagePhoto(models.Model):
 
     package = models.ForeignKey(TourPackage, on_delete=models.CASCADE, related_name="photos")
     position = models.PositiveSmallIntegerField(default=0)
-    image = models.ImageField(upload_to="packages/gallery/")
+    image = models.ImageField(upload_to="packages/gallery/", blank=True)
+    image_link = models.CharField(
+        "photo link",
+        max_length=500,
+        blank=True,
+        help_text="Or paste a public image link, e.g. /images/destination-goa.jpg. "
+        "Used when no photo is uploaded.",
+    )
     alt = models.CharField("description of the photo", max_length=200)
 
     class Meta:

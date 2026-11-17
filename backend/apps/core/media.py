@@ -19,3 +19,11 @@ def media_url(file: FieldFile | None, request: Request | None) -> str:
     if settings.PUBLIC_MEDIA_BASE_URL:
         return f"{settings.PUBLIC_MEDIA_BASE_URL.rstrip('/')}{url}"
     return request.build_absolute_uri(url) if request else url
+
+
+def image_url(file: FieldFile | None, link: str, request: Request | None) -> str:
+    """The uploaded photo if there is one, otherwise the photo link the staff pasted, or "".
+
+    A link can be a public address (https://...) or a path on this website (/images/...).
+    """
+    return media_url(file, request) or link.strip()
