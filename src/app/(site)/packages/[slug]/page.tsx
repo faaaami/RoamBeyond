@@ -31,10 +31,8 @@ type Props = { params: Promise<{ slug: string }> };
  * Every package published in the admin is built as static HTML at build time.
  * Packages added later are rendered on their first visit, then cached.
  */
-export async function generateStaticParams() {
-  const packages = await getPackages();
-  return packages.map((p) => ({ slug: p.slug }));
-}
+// No generateStaticParams: pages render on first visit and are cached, so an empty
+// catalog still builds and a new package appears without a rebuild.
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

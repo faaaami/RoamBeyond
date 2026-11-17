@@ -10,14 +10,12 @@ import { SectionReveal } from "@/components/SectionReveal";
 import { buttonClass } from "@/components/ui/button";
 import { Tag } from "@/components/ui/Tag";
 import { pageMetadata } from "@/lib/seo";
-import { getDestination, getDestinations, getPackages } from "@/lib/content";
+import { getDestination, getPackages } from "@/lib/content";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export async function generateStaticParams() {
-  const destinations = await getDestinations();
-  return destinations.map((d) => ({ slug: d.slug }));
-}
+// No generateStaticParams: pages render on first visit and are cached, so an empty
+// catalog still builds and a new package appears without a rebuild.
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
